@@ -1,0 +1,55 @@
+# --- Compiled Files (Артефакты компиляции) ---
+*.main
+*.o
+*.obj
+*.exe
+*.out
+*.app
+*.so
+*.dylib
+*.dll
+
+# --- Build Directories (Папки сборки) ---
+# Игнорируем стандартные папки, куда попадают бинарники
+[Bb]in/
+[Ob]j/
+[Dd]ebug/
+[Rr]elease/
+build/
+out/
+
+# --- CMake (Если будешь его использовать) ---
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+
+# --- IDE Specific (Настройки редакторов) ---
+# Visual Studio
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# CLion / JetBrains
+.idea/
+cmake-build-*/
+
+# --- OS Specific (Мусор операционных систем) ---
+.DS_Store
+Thumbs.db
+
+# --- Python (Для наших линтеров и скриптов) ---
+__pycache__/
+*.py[cod]
+*$py.class
