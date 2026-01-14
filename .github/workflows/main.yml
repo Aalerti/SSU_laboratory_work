@@ -1,0 +1,56 @@
+name: University Labs Autocheck with Linting
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python & Java
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Install Linting Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++
+          pip install cpplint
+
+      - name: Find, Lint and Compile
+        run: |
+          for dir in "лабораторные"/*/; do
+            [ -d "$dir" ] || continue
+            echo "--- Checking: $dir ---"
+
+            # 1. Линтинг C++ (Google Style)
+            if ls "$dir"*.cpp 1> /dev/null 2>&1; then
+              echo "Linting C++ files..."
+              cpplint --filter=-legal/copyright,-build/include_subdir "$dir"*.cpp
+              
+              echo "Compiling C++..."
+              g++ "$dir"*.cpp -o "${dir%/}.out"
+              echo "✅ C++ OK"
+            fi
+
+            # 2. Проверка Java
+            if ls "$dir"*.java 1> /dev/null 2>&1; then
+              echo "Compiling Java..."
+              javac "$dir"*.java
+              echo "✅ Java OK"
+            fi
+          done
