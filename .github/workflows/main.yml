@@ -1,6 +1,5 @@
-name: University Labs Autocheck
+name: University Labs Autocheck with Linting
 
-# Запуск при каждом пуше в ветку main или при создании Pull Request
 on:
   push:
     branches: [ "main", "master" ]
@@ -12,54 +11,46 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Копируем код репозитория на виртуальную машину GitHub
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Устанавливаем Java (нужна версия 17 или выше для современных лаб)
+      - name: Set up Python & Java
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # 3. Устанавливаем компилятор C++ (g++)
-      - name: Install C++ compiler
+      - name: Install Linting Tools
         run: |
           sudo apt-get update
           sudo apt-get install -y g++
+          pip install cpplint
 
-      # 4. Главный скрипт: Автоматический поиск и сборка всех работ
-      - name: Find and Compile all labs
+      - name: Find, Lint and Compile
         run: |
-          echo "Начинаю поиск лабораторных работ в папке 'laboratory'..."
-          
-          # Проверяем, существует ли папка вообще
-          if [ ! -d "laboratory" ]; then
-            echo "Ошибка: Папка 'laboratory' не найдена!"
-            exit 1
-          fi
-
-          # Цикл по всем подпапкам
-          for dir in "laboratory"/*/; do
-            # Пропускаем, если это не директория
+          for dir in "лабораторные"/*/; do
             [ -d "$dir" ] || continue
-            
-            echo "--------------------------------------------------"
-            echo "Проверка папки: $dir"
+            echo "--- Checking: $dir ---"
 
-            # Сборка C++: ищем любые .cpp файлы
+            # 1. Линтинг C++ (Google Style)
             if ls "$dir"*.cpp 1> /dev/null 2>&1; then
-              echo "Обнаружен C++ проект. Компилирую..."
-              # Собираем все .cpp файлы в один исполняемый файл
+              echo "Linting C++ files..."
+              cpplint --filter=-legal/copyright,-build/include_subdir "$dir"*.cpp
+              
+              echo "Compiling C++..."
               g++ "$dir"*.cpp -o "${dir%/}.out"
-              echo "✅ C++ сборка успешно завершена!"
+              echo "✅ C++ OK"
             fi
 
-            # Сборка Java: ищем любые .java файлы
+            # 2. Проверка Java
             if ls "$dir"*.java 1> /dev/null 2>&1; then
-              echo "Обнаружен Java проект. Компилирую..."
+              echo "Compiling Java..."
               javac "$dir"*.java
-              echo "✅ Java компиляция успешно завершена!"
+              echo "✅ Java OK"
             fi
           done
