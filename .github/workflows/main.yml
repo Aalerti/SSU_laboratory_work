@@ -1,0 +1,65 @@
+name: University Labs Autocheck
+
+# Запуск при каждом пуше в ветку main или при создании Pull Request
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Копируем код репозитория на виртуальную машину GitHub
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Устанавливаем Java (нужна версия 17 или выше для современных лаб)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # 3. Устанавливаем компилятор C++ (g++)
+      - name: Install C++ compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++
+
+      # 4. Главный скрипт: Автоматический поиск и сборка всех работ
+      - name: Find and Compile all labs
+        run: |
+          echo "Начинаю поиск лабораторных работ в папке 'laboratory'..."
+          
+          # Проверяем, существует ли папка вообще
+          if [ ! -d "laboratory" ]; then
+            echo "Ошибка: Папка 'laboratory' не найдена!"
+            exit 1
+          fi
+
+          # Цикл по всем подпапкам
+          for dir in "laboratory"/*/; do
+            # Пропускаем, если это не директория
+            [ -d "$dir" ] || continue
+            
+            echo "--------------------------------------------------"
+            echo "Проверка папки: $dir"
+
+            # Сборка C++: ищем любые .cpp файлы
+            if ls "$dir"*.cpp 1> /dev/null 2>&1; then
+              echo "Обнаружен C++ проект. Компилирую..."
+              # Собираем все .cpp файлы в один исполняемый файл
+              g++ "$dir"*.cpp -o "${dir%/}.out"
+              echo "✅ C++ сборка успешно завершена!"
+            fi
+
+            # Сборка Java: ищем любые .java файлы
+            if ls "$dir"*.java 1> /dev/null 2>&1; then
+              echo "Обнаружен Java проект. Компилирую..."
+              javac "$dir"*.java
+              echo "✅ Java компиляция успешно завершена!"
+            fi
+          done
