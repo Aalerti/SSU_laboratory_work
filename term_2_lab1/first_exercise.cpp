@@ -14,6 +14,11 @@ int main() {
 
     nums.erase(std::prev(r_min_it.base()));
   }
+  else {
+    std::string error = "Vector is empty!";
+    std::copy(error.begin(), error.end(), std::ostream_iterator<char>(std::cout, ""));
+    return 0;
+  }
 
   std::copy(nums.begin(), nums.end(),
             std::ostream_iterator<int>(std::cout, " "));
