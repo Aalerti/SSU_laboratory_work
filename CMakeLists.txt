@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 4.0)
 project(laboratory)
 
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 26)
 
-add_executable(laboratory lab1_intro/main.cpp)
+add_subdirectory(term_2_lab1)
+add_subdirectory(term_2_lab2)
