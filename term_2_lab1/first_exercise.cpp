@@ -1,13 +1,14 @@
 #include <algorithm>
 #include <iostream>
-#include <iterator>
 #include <vector>
 
 int main() {
   std::vector<int> nums;
 
-  std::copy(std::istream_iterator<int>(std::cin), std::istream_iterator<int>(),
-            std::back_inserter(nums));
+  int x;
+  while (std::cin >> x) {
+    nums.push_back(x);
+  }
 
   if (!nums.empty()) {
     auto r_min_it = std::min_element(nums.rbegin(), nums.rend());
@@ -15,13 +16,14 @@ int main() {
     nums.erase(std::prev(r_min_it.base()));
   }
   else {
-    std::string error = "Vector is empty!";
-    std::copy(error.begin(), error.end(), std::ostream_iterator<char>(std::cout, ""));
+    std::cout << "Vector is empty!";
     return 0;
   }
 
-  std::copy(nums.begin(), nums.end(),
-            std::ostream_iterator<int>(std::cout, " "));
+  for (size_t i = 0; i < nums.size(); ++i) {
+    std::cout << nums[i];
+    if (i + 1 < nums.size()) std::cout << " ";
+  }
 
   return 0;
 }

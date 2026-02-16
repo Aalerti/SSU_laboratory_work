@@ -1,18 +1,19 @@
 #include <algorithm>
 #include <iostream>
-#include <iterator>
 #include <vector>
 
 bool check_empty_vector_and_print(const std::vector<int>& vec, const std::string& error_msg = "Empty input") {
   if (vec.empty()) {
-    std::copy(error_msg.begin(), error_msg.end(), std::ostream_iterator<char>(std::cout, ""));
+    std::cout << error_msg;
     return true;
   }
 
-  std::copy(vec.begin(), vec.end(), std::ostream_iterator<int>(std::cout, " "));
+  for (size_t i = 0; i < vec.size(); ++i) {
+    std::cout << vec[i];
+    if (i + 1 < vec.size()) std::cout << " ";
+  }
 
-  std::string sep = "\n\n\n";
-  std::copy(sep.begin(), sep.end(), std::ostream_iterator<char>(std::cout, ""));
+  std::cout << "\n\n\n";
 
   return false;
 }
@@ -21,9 +22,10 @@ bool check_empty_vector_and_print(const std::vector<int>& vec, const std::string
 int main() {
   std::vector<int> nums;
 
-  std::copy(std::istream_iterator<int>(std::cin),
-    std::istream_iterator<int>(),
-    std::back_inserter(nums));
+  int x;
+  while (std::cin >> x) {
+    nums.push_back(x);
+  }
 
   if (check_empty_vector_and_print(nums)) return 0;
 
