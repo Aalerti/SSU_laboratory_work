@@ -1,20 +1,19 @@
 #include <cmath>
 #include <functional>
 #include <iostream>
-#include <iterator>
 #include <numeric>
 #include <vector>
 
 int main() {
   std::vector<int> nums;
 
-  std::copy(std::istream_iterator<int>(std::cin),
-    std::istream_iterator<int>(),
-    std::back_inserter(nums));
+  int x;
+  while (std::cin >> x) {
+    nums.push_back(x);
+  }
 
   if (nums.empty()) {
-    std::string error_msg = "Empty input";
-    std::copy(error_msg.begin(), error_msg.end(), std::ostream_iterator<char>(std::cout, ""));
+    std::cout << "Empty input";
     return 0;
   }
 
@@ -25,19 +24,8 @@ int main() {
   double geom_mean = std::exp(std::log(product) / nums.size());
 
 
-  std::string res_arithmetic = "Arithmetic mean: " + std::to_string(arif_mean) + "\n";
-  std::copy(
-      res_arithmetic.begin(),
-      res_arithmetic.end(),
-      std::ostream_iterator<char>(std::cout, "")
-  );
-
-  std::string res_geometric = "Geometric mean: " + std::to_string(geom_mean) + "\n";
-  std::copy(
-      res_geometric.begin(),
-      res_geometric.end(),
-      std::ostream_iterator<char>(std::cout, "")
-  );
+  std::cout << "Arithmetic mean: " << arif_mean << "\n";
+  std::cout << "Geometric mean: " << geom_mean << "\n";
 
 
   return 0;
