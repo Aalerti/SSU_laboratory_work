@@ -60,6 +60,7 @@ int main() {
         return 1;
     }
 
+
     std::cout << "First number: " << first_number << '\n';
     
     for (const auto &pair : ans) {
