@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <unordered_set>
 #include <cctype>
 #include <set>
 
@@ -11,9 +10,9 @@ std::vector<std::string> findTargetWords(const std::string& text) {
 
     std::vector<std::string> answer;
 
-    std::unordered_set<std::string> dot_sent;
-    std::unordered_set<std::string> exclamation_sent;
-    std::unordered_set<std::string> question_sent;
+    std::set<std::string> dot_sent;
+    std::set<std::string> exclamation_sent;
+    std::set<std::string> question_sent;
 
     std::vector<std::string> words;
     std::string curr_word;
@@ -40,7 +39,7 @@ std::vector<std::string> findTargetWords(const std::string& text) {
 
     if (dot_sent.empty() || question_sent.empty()) {
         std::cout << "text hasn't got any question and dot sentences";
-        return std::vector<std::string>();
+        return answer;
     }
 
     for (const auto& word: dot_sent) {

@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -17,6 +18,16 @@ bool is_integer(const std::string& s) {
         if (!isdigit(s[i])) return false;
     }
     return true;
+}
+
+void clean_word(std::string &word) {
+    word.erase(remove_if(word.begin(), word.end(), [](unsigned char c) {
+        return std::ispunct(c);
+    }), word.end());
+
+    for (char& c : word) {
+        c = std::tolower(static_cast<unsigned char>(c));
+    }
 }
 
 int main() {
@@ -41,7 +52,8 @@ int main() {
         }
 
         else {
-            ans[input] += 1;
+            clean_word(input);
+            if (!input.empty()) ans[input] += 1;
         }
     }
 
