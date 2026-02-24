@@ -27,16 +27,16 @@ int main() {
     }
 
     std::string input;
-    bool is_first_digit_found = false;
-    int first_digit = 0;
+    bool is_first_number_found = false;
+    int first_number = 0;
 
     std::unordered_map<std::string, int> ans;
 
     while (file >> input) {
         if (is_integer(input)) {
-            if (!is_first_digit_found) {
-                first_digit = std::stoi(input);
-                is_first_digit_found = true;
+            if (!is_first_number_found) {
+                first_number = std::stoi(input);
+                is_first_number_found = true;
             }
         }
 
@@ -45,20 +45,25 @@ int main() {
         }
     }
 
-    if (!is_first_digit_found) {
-        std::cerr << "You didn't enter a first digit";
+    if (!is_first_number_found) {
+        std::cerr << "You didn't enter a first number";
         return 1;
+    }
+
+    if (first_number <= 0) {
+        std::cout << "First number is " << first_number << ". A word cannot appear this many times.\n";
+        return 0;
     }
 
     if (ans.empty()) {
-        std::cerr << "You didn't enter a word, only digit";
+        std::cerr << "You didn't enter a word, only number";
         return 1;
     }
 
-    std::cout << "First digit: " << first_digit << '\n';
+    std::cout << "First number: " << first_number << '\n';
     
     for (const auto &pair : ans) {
-        if (pair.second == first_digit) {
+        if (pair.second == first_number) {
             std::cout << pair.first << '\n';
         }
     }
