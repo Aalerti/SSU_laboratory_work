@@ -7,6 +7,5 @@ foreach(SOURCE_FILE ${SOURCES})
 
     set(TARGET_NAME "${DIR_NAME}_${FILE_NAME}")
 
-    add_executable(${TARGET_NAME} "${SOURCE_FILE}"
-            ../term_2_lab3/first_exercise.cpp)
+    add_executable(${TARGET_NAME} "${SOURCE_FILE}")
 endforeach()
