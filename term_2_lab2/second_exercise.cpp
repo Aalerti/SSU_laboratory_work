@@ -40,6 +40,7 @@ int main() {
     std::string input;
     bool is_first_number_found = false;
     int first_number = 0;
+    int first_number_counter = 0;
 
     std::unordered_map<std::string, int> ans;
 
@@ -48,6 +49,11 @@ int main() {
             if (!is_first_number_found) {
                 first_number = std::stoi(input);
                 is_first_number_found = true;
+                first_number_counter++;
+            }
+            else {
+                int number = std::stoi(input);
+                if (number == first_number) first_number_counter++;
             }
         }
 
@@ -76,7 +82,7 @@ int main() {
     std::cout << "First number: " << first_number << '\n';
     
     for (const auto &pair : ans) {
-        if (pair.second == first_number) {
+        if (pair.second == first_number_counter) {
             std::cout << pair.first << '\n';
         }
     }

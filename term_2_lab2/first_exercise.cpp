@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <set>
-#include <cmath>
+# include <cmath>
 
 int main() {
     std::vector<int> nums;
