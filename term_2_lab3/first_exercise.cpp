@@ -38,8 +38,10 @@ void quicksort_by_salary(std::vector<Employee>& arr, int low, int high) {
 }
 
 int main() {
-    std::ifstream inputFile("/home/alerti/Projects/CLionProjects/SSU_laboratory_work/term_2_lab3/first_file_output.txt");
-    std::ofstream outputFile("/home/alerti/Projects/CLionProjects/SSU_laboratory_work/term_2_lab3/first_file_output.txt");
+    //std::ifstream inputFile("/home/alerti/Projects/CLionProjects/SSU_laboratory_work/term_2_lab3/first_file_input.txt.txt");
+    std::ifstream inputFile("C:\\Users\\Max\\CLionProjects\\laboratory\\term_2_lab3\\first_file_input.txt");
+    //std::ofstream outputFile("/home/alerti/Projects/CLionProjects/SSU_laboratory_work/term_2_lab3/first_file_output.txt");
+    std::ofstream outputFile("C:\\Users\\Max\\CLionProjects\\laboratory\\term_2_lab3\\first_file_output.txt");
 
     if (!inputFile.is_open()) {
         std::cerr << "Error when opening input.txt!" << '\n';
@@ -67,8 +69,8 @@ int main() {
     outputFile << std::left << std::setw(15) << "Surname"
                << std::setw(15) << "Position"
                << std::setw(15) << "Data"
-               << std::setw(10) << "Experience"
-               << std::setw(10) << "Salary" << '\n';
+               << std::setw(15) << "Experience"
+               << std::setw(15) << "Salary" << '\n';
     outputFile << std::string(65, '-') << '\n';
 
     for (const auto& e : employees) {
@@ -79,7 +81,7 @@ int main() {
         outputFile << std::left << std::setw(15) << e.surname
                    << std::setw(15) << e.position
                    << std::setw(15) << date
-                   << std::setw(10) << e.experience
+                   << std::setw(15) << e.experience
                    << std::fixed << std::setprecision(2) << e.salary << '\n';
     }
 
