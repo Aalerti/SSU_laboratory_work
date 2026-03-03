@@ -12,24 +12,22 @@ struct Employee {
     int year;
     int experience;
     double salary;
+
+    bool operator<(const Employee& other) const {
+        if (surname != other.surname) {
+            return surname < other.surname;
+        }
+        if (experience != other.experience) {
+            return experience < other.experience;
+        }
+        return year < other.year;
+    }
 };
-
-bool compareEmployees(const Employee &a, const Employee &b) {
-    if (a.surname != b.surname) {
-        return a.surname < b.surname;
-    }
-
-    if (a.experience != b.experience) {
-        return a.experience < b.experience;
-    }
-
-    return a.year < b.year;
-}
 
 void insert_sort(std::vector<Employee> &employees) {
     for (int i = 1; i < employees.size(); i++) {
         int min_id = i;
-        while (min_id > 0 && compareEmployees(employees[min_id],employees[min_id - 1])) {
+        while (min_id > 0 && employees[min_id] < employees[min_id - 1]) {
             std::swap(employees[min_id], employees[min_id - 1]);
             min_id--;
         }
@@ -39,8 +37,10 @@ void insert_sort(std::vector<Employee> &employees) {
 
 
 int main() {
-    std::ifstream inputFile("/home/alerti/Projects/CLionProjects/SSU_laboratory_work/term_2_lab3/first_file_input.txt");
-    std::ofstream outputFile("/home/alerti/Projects/CLionProjects/SSU_laboratory_work/term_2_lab3/first_file_output.txt");
+    //std::ifstream inputFile("/home/alerti/Projects/CLionProjects/SSU_laboratory_work/term_2_lab3/first_file_input.txt.txt");
+    std::ifstream inputFile("C:\\Users\\Max\\CLionProjects\\laboratory\\term_2_lab3\\first_file_input.txt");
+    //std::ofstream outputFile("/home/alerti/Projects/CLionProjects/SSU_laboratory_work/term_2_lab3/first_file_output.txt");
+    std::ofstream outputFile("C:\\Users\\Max\\CLionProjects\\laboratory\\term_2_lab3\\first_file_output.txt");
 
     if (!inputFile.is_open()) {
         std::cerr << "Error when opening input.txt!" << '\n';

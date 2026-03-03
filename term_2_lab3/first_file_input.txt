@@ -17,4 +17,7 @@ Semenov Security 20 04 1986 9 130000
 Golubev TechLead 13 02 1984 14 250000
 Vinogradov Frontend 27 09 1997 3 105000
 Bogdanov Backend 04 06 1992 6 160000
-Vorobyov DBA 19 12 1988 8 135000
+Vorobyov DBA 19 12 1988 12 135000
+Vorobyov Backend 19 12 1978 12 250000
+Vorobyov TechLead 19 12 1998 9 120000
+Vorobyov Security 19 12 2005 12 280000
