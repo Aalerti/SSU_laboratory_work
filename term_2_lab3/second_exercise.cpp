@@ -12,36 +12,32 @@ struct Employee {
     int year;
     int experience;
     double salary;
+
+    bool operator<(const Employee& other) const {
+        if (surname != other.surname) {
+            return surname < other.surname;
+        }
+        return position < other.position;
+    }
 };
 
+void shell_sort(std::vector<Employee> &employees) {
+    int n = employees.size();
 
-int partition(std::vector<Employee>& arr, int l, int r) {
-    double pivot = arr[(l+r) / 2].salary;
-    while (true) {
-        while (arr[l].salary < pivot) l++;
-        while (arr[r].salary > pivot) r--;
-        if (l >= r) return r;
+    for (int d = n / 2; d >= 1; d/=2) {
 
-        std::swap(arr[l], arr[r]);
-        l++;
-        r--;
+        for (int i = d; i < n; i++) {
+            Employee temp = employees[i];
+            int j;
+            for (j = i; j >= d && temp < employees[j - d]; j-=d) {
+                employees[j] = employees[j - d];
+            }
+            employees[j] = temp;
+        }
     }
+
 }
 
-void qsort_helper(std::vector<Employee> &arr, int l, int r) {
-    if (l>=r) return;
-
-    int index = partition(arr, l, r);
-
-    qsort_helper(arr, l, index);
-    qsort_helper(arr, index+1, r);
-}
-
-void quick_sort(std::vector<Employee> &arr) {
-    if (!arr.empty()) {
-        qsort_helper(arr, 0, arr.size() -1);
-    }
-}
 
 
 int main() {
@@ -65,7 +61,7 @@ int main() {
                      }
     inputFile.close();
 
-    quick_sort(employees);
+    shell_sort(employees);
 
     if (!outputFile.is_open()) {
         std::cerr << "Error when creating output.txt!" << '\n';
@@ -76,8 +72,8 @@ int main() {
     outputFile << std::left << std::setw(15) << "Surname"
                << std::setw(15) << "Position"
                << std::setw(15) << "Data"
-               << std::setw(15) << "Experience"
-               << std::setw(15) << "Salary" << '\n';
+               << std::setw(10) << "Experience"
+               << std::setw(10) << "Salary" << '\n';
     outputFile << std::string(65, '-') << '\n';
 
     for (const auto& e : employees) {
@@ -88,13 +84,9 @@ int main() {
         outputFile << std::left << std::setw(15) << e.surname
                    << std::setw(15) << e.position
                    << std::setw(15) << date
-                   << std::setw(15) << e.experience
+                   << std::setw(10) << e.experience
                    << std::fixed << std::setprecision(2) << e.salary << '\n';
     }
 
     return 0;
 }
-
-
-
-
