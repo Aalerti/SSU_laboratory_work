@@ -6,4 +6,13 @@ set(CMAKE_CXX_STANDARD 26)
 add_subdirectory(term_2_lab1)
 add_subdirectory(term_2_lab2)
 add_subdirectory(term_2_lab3)
+
+
+
+
+
+
+
+
 add_subdirectory(term_2_exercise_vector)
+add_subdirectory(term_2_exercise_sort)
