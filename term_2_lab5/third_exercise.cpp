@@ -53,13 +53,6 @@ struct Queue {
     }
 };
 
-bool isComposite(int n) {
-    if (n < 4) return false;
-    for (int i = 2; i * i <= n; i++)
-        if (n % i == 0) return true;
-    return false;
-}
-
 int main() {
     int n;
     std::cin >> n;
@@ -71,29 +64,42 @@ int main() {
         q.push(x);
     }
 
-    std::cout << "Original: ";
-    q.print();
-
 
     int total = q.size;
-    int idx = -1;
-    for (int i = 0; i < total; i++) {
-        int val = q.pop();
+    int val = q.pop();
+    int minVal = val;
+    q.push(val);
+    for (int i = 1; i < total; i++) {
+        val = q.pop();
+        if (val < minVal) minVal = val;
         q.push(val);
-        if (idx == -1 && isComposite(val))
-            idx = i;
     }
 
-    if (idx == -1) {
-        std::cout << "No composite numbers found.\n";
+
+    int lastOdd = 0;
+    bool foundOdd = false;
+    for (int i = 0; i < total; i++) {
+        val = q.pop();
+        if (val % 2 != 0) {
+            lastOdd = val;
+            foundOdd = true;
+        }
+        q.push(val);
+    }
+
+    if (!foundOdd) {
+        std::cout << "No odd elements found.\n";
         return 0;
     }
 
-    for (int i = 0; i < idx; i++)
-        q.push(q.pop());
+    Queue result;
+    for (int i = 0; i < total; i++) {
+        val = q.pop();
+        result.push(val);
+        if (val == minVal)
+            result.push(lastOdd);
+    }
 
-    std::cout << "Shifted:  ";
-    q.print();
-
+    result.print();
     return 0;
 }
