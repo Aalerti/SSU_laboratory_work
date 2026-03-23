@@ -1,80 +1,87 @@
 #include <iostream>
-#include <fstream>
-#include <stack>
 
-bool is_consonant(char c) {
-  if (!std::isalpha(c))
-    return false;
+struct Stack {
+    char* data;
+    int size;
+    int capacity;
 
-  char lower_char = std::tolower(c);
-  bool is_vowel = (lower_char == 'a' || lower_char == 'e' || lower_char == 'i' ||
-                  lower_char == 'o' || lower_char == 'u' || lower_char == 'y');
+    Stack() : size(0), capacity(4) {
+        data = new char[capacity];
+    }
 
-  return !is_vowel;
-}
+    ~Stack() {
+        delete[] data;
+    }
 
-void print_stack(std::stack<char> &letters) {
-  while (!letters.empty()) {
-    std::cout << letters.top() << ' ';
-    letters.pop();
-  }
+    void push(char c) {
+        if (size == capacity) {
+            capacity *= 2;
+            char* newData = new char[capacity];
+            for (int i = 0; i < size; i++) newData[i] = data[i];
+            delete[] data;
+            data = newData;
+        }
+        data[size++] = c;
+    }
+
+    char pop() {
+        return data[--size];
+    }
+
+    bool empty() const {
+        return size == 0;
+    }
+
+    void printBottomToTop() {
+        Stack temp;
+        while (!empty()) temp.push(pop());
+        while (!temp.empty()) {
+            char c = temp.pop();
+            std::cout << c << ' ';
+            push(c);
+        }
+        std::cout << '\n';
+    }
+};
+
+bool isConsonant(char c) {
+    if (c >= 'A' && c <= 'Z') c = static_cast<char>(c - 'A' + 'a');
+    if (c < 'a' || c > 'z') return false;
+    return c != 'a' && c != 'e' && c != 'i' && c != 'o' && c != 'u' && c != 'y';
 }
 
 int main() {
-  int n;
-  std::cin >> n;
+    int n;
+    std::cin >> n;
 
-  std::stack<char> letters;
-  int index_of_first_consonant = -1;
-
-  for (int i = 0; i < n; i++) {
-    char c;
-    std::cin >> c;
-    if (is_consonant(c) && index_of_first_consonant == -1) {
-      index_of_first_consonant = i;
+    Stack stack;
+    for (int i = 0; i < n; i++) {
+        char c;
+        std::cin >> c;
+        stack.push(c);
     }
-    letters.push(c);
-  }
 
-  if (index_of_first_consonant == -1) {
-    print_stack(letters);
+    std::cout << "Original: ";
+    stack.printBottomToTop();
+
+    Stack temp;
+    while (!stack.empty()) {
+        temp.push(stack.pop());
+    }
+
+    Stack newStack;
+    bool found = false;
+    while (!temp.empty()) {
+        char c = temp.pop();
+        newStack.push(c);
+        if (!found && isConsonant(c)) {
+            found = true;
+            newStack.push('!');
+        }
+    }
+
+    std::cout << "New:      ";
+    newStack.printBottomToTop();
+
     return 0;
-  }
-
-  // Если нужно чтобы выводился красивый порядок то
-  std::stack<char> temp_stack;
-  int current_index = n-1;
-  while (!letters.empty()) {
-    if (current_index == index_of_first_consonant) {
-      temp_stack.push('!');
-    }
-    temp_stack.push(letters.top());
-    letters.pop();
-    current_index--;
-  }
-  print_stack(temp_stack);
-
-  // std::stack<char> temp_stack;
-  // while (!letters.empty()) {
-  //   temp_stack.push(letters.top());
-  //   letters.pop();
-  // }
-  //
-  // std::stack<char> new_stack;
-  // int current_index = 0;
-  //
-  // while (!temp_stack.empty()) {
-  //   new_stack.push(temp_stack.top());
-  //   temp_stack.pop();
-  //
-  //
-  //   if (current_index == index_of_first_consonant) {
-  //     new_stack.push('!');
-  //   }
-  //   current_index++;
-  // }
-  //
-  // print_stack(new_stack);
-
-  return 0;
 }
