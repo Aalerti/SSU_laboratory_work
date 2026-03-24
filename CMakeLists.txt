@@ -8,6 +8,7 @@ add_subdirectory(term_2_lab2)
 add_subdirectory(term_2_lab3)
 add_subdirectory(term_2_lab4)
 add_subdirectory(term_2_lab5)
+add_subdirectory(term_2_lab6)
 
 add_subdirectory(term_2_exercise_vector)
 add_subdirectory(term_2_exercise_sort)
