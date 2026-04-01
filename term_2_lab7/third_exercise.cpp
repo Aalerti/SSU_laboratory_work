@@ -79,39 +79,58 @@ struct TreeNode {
             return;
         }
 
-        Node* grandparent = findParent(root, parent);
-        if (grandparent == nullptr) {
-            cout << "The parent of average node is root. Grandparent don't exist\n";
-            return;
+        Node* brother;
+        if (parent->left == medianLeaf) {
+            brother = parent->right;
+        }
+        else {
+            brother = parent->left;
         }
 
-        Node* uncle = nullptr;
-        if (grandparent->left == parent)
-            uncle = grandparent->right;
-        else
-            uncle = grandparent->left;
-
-        if (uncle == nullptr) {
-            cout << "Uncle don't exist, so nephews don't exist \n";
-            return;
+        if (brother->left != nullptr) {
+            deleteTree(brother->left);
+            brother->left = nullptr;
         }
 
-        bool hasNephews = (uncle->left != nullptr || uncle->right != nullptr);
-        if (!hasNephews) {
-            cout << "Uncle don't have a children, so nephews don't exist\n";
-            return;
+        if (brother->right != nullptr) {
+
+            deleteTree(brother->right);
+            brother->right = nullptr;
         }
 
+        // Node* grandparent = findParent(root, parent);
+        // if (grandparent == nullptr) {
+        //     cout << "The parent of average node is root. Grandparent don't exist\n";
+        //     return;
+        // }
+        //
+        // Node* uncle = nullptr;
+        // if (grandparent->left == parent)
+        //     uncle = grandparent->right;
+        // else
+        //     uncle = grandparent->left;
 
-        if (uncle->left != nullptr) {
-            deleteTree(uncle->left);
-            uncle->left = nullptr;
-        }
-
-        if (uncle->right != nullptr) {
-            deleteTree(uncle->right);
-            uncle->right = nullptr;
-        }
+        // if (uncle == nullptr) {
+        //     cout << "Uncle don't exist, so nephews don't exist \n";
+        //     return;
+        // }
+        //
+        // bool hasNephews = (uncle->left != nullptr || uncle->right != nullptr);
+        // if (!hasNephews) {
+        //     cout << "Uncle don't have a children, so nephews don't exist\n";
+        //     return;
+        // }
+        //
+        //
+        // if (uncle->left != nullptr) {
+        //     deleteTree(uncle->left);
+        //     uncle->left = nullptr;
+        // }
+        //
+        // if (uncle->right != nullptr) {
+        //     deleteTree(uncle->right);
+        //     uncle->right = nullptr;
+        // }
     }
 
     void printLevel(Node* node, int level, int target) {

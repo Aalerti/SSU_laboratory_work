@@ -1,53 +1,64 @@
 #include <iostream>
 
-struct Queue {
-    int* data;
-    int head;
-    int tail;
-    int size;
-    int capacity;
+struct node {
+    int inf;
+    node* next;
+};
 
-    Queue() : head(0), tail(0), size(0), capacity(8) {
-        data = new int[capacity];
-    }
+struct Queue {
+    node* head;
+    node* tail;
+
+    Queue() : head(nullptr), tail(nullptr) {}
 
     ~Queue() {
-        delete[] data;
+        while (head) {
+            node* temp = head;
+            head = head->next;
+            delete temp;
+        }
     }
 
     void push(int val) {
-        if (size == capacity) {
-            capacity *= 2;
-            int* newData = new int[capacity];
-            for (int i = 0; i < size; i++)
-                newData[i] = data[(head + i) % (capacity / 2)];
-            delete[] data;
-            data = newData;
-            head = 0;
-            tail = size;
+        node* r = new node;
+        r->inf = val;
+        r->next = nullptr;
+        if (!head && !tail) {
+            head = tail = r;
+        } else {
+            tail->next = r;
+            tail = r;
         }
-        data[tail] = val;
-        tail = (tail + 1) % capacity;
-        size++;
     }
 
     int pop() {
-        int val = data[head];
-        head = (head + 1) % capacity;
-        size--;
-        return val;
+        int i = head->inf;
+        node* r = head;
+        head = head->next;
+        if (!head) tail = nullptr;
+        delete r;
+        return i;
     }
 
     bool empty() const {
-        return size == 0;
+        return head == nullptr;
+    }
+
+    int size() const {
+        int count = 0;
+        node* p = head;
+        while (p) {
+            count++;
+            p = p->next;
+        }
+        return count;
     }
 
     void print() {
-        int n = size;
-        for (int i = 0; i < n; i++) {
-            int val = pop();
-            std::cout << val << ' ';
-            push(val);
+        node* p = head;
+        while (p) {
+            std::cout << p->inf << ' ';
+            p = p->next;
         }
         std::cout << '\n';
     }
@@ -65,7 +76,7 @@ int main() {
     }
 
 
-    int total = q.size;
+    int total = q.size();
     int val = q.pop();
     int minVal = val;
     q.push(val);
