@@ -5,9 +5,10 @@ using namespace std;
 
 struct Node {
     int val;
+    int insertOrder;
     Node* left;
     Node* right;
-    Node(int v) : val(v), left(nullptr), right(nullptr) {}
+    Node(int v, int order) : val(v), insertOrder(order), left(nullptr), right(nullptr) {}
 };
 
 struct TreeNode {
@@ -15,12 +16,12 @@ struct TreeNode {
 
     TreeNode() : root(nullptr) {}
 
-    Node* insert(Node* root, int val) {
-        if (root == nullptr) return new Node(val);
+    Node* insert(Node* root, int val, int order) {
+        if (root == nullptr) return new Node(val, order);
         if (val < root->val)
-            root->left = insert(root->left, val);
+            root->left = insert(root->left, val, order);
         else if (val > root->val)
-            root->right = insert(root->right, val);
+            root->right = insert(root->right, val, order);
         return root;
     }
 
@@ -33,7 +34,6 @@ struct TreeNode {
 
     void getLeavesAtLevel(Node* node, int level, int K, vector<Node*>& leaves) {
         if (node == nullptr) return;
-
 
         if (level == K) {
             bool isLeaf = (node->left == nullptr && node->right == nullptr);
@@ -52,15 +52,12 @@ struct TreeNode {
             return a->val < b->val;
         });
 
-
         int medianIdx = leaves.size() / 2;
         return leaves[medianIdx];
     }
 
-
     Node* findParent(Node* root, Node* target) {
         if (root == nullptr) return nullptr;
-
         if (root->left == target || root->right == target) return root;
 
         if (target->val < root->val)
@@ -69,68 +66,82 @@ struct TreeNode {
             return findParent(root->right, target);
     }
 
+    Node* removeNode(Node* node, int key) {
+        if (node == nullptr) return nullptr;
+
+        if (key < node->val) {
+            node->left = removeNode(node->left, key);
+        } else if (key > node->val) {
+            node->right = removeNode(node->right, key);
+        } else {
+            if (node->left == nullptr) {
+                Node* temp = node->right;
+                delete node;
+                return temp;
+            } else if (node->right == nullptr) {
+                Node* temp = node->left;
+                delete node;
+                return temp;
+            }
+
+            if (node->left->insertOrder < node->right->insertOrder) {
+                Node* maxLeft = node->left;
+                while (maxLeft->right != nullptr) {
+                    maxLeft = maxLeft->right;
+                }
+                maxLeft->right = node->right;
+
+                Node* temp = node->left;
+                delete node;
+                return temp;
+            } else {
+                Node* minRight = node->right;
+                while (minRight->left != nullptr) {
+                    minRight = minRight->left;
+                }
+                minRight->left = node->left;
+
+                Node* temp = node->right;
+                delete node;
+                return temp;
+            }
+        }
+        return node;
+    }
 
     void deleteNephews(Node* medianLeaf) {
         if (medianLeaf == nullptr) return;
 
         Node* parent = findParent(root, medianLeaf);
         if (parent == nullptr) {
-            cout << "Average node is root. It don't have parent\n";
+            cout << "Average node is root. It doesn't have a parent\n";
             return;
         }
 
-        Node* brother;
+        Node* brother = nullptr;
         if (parent->left == medianLeaf) {
             brother = parent->right;
-        }
-        else {
+        } else {
             brother = parent->left;
         }
 
-        if (brother->left != nullptr) {
-            deleteTree(brother->left);
-            brother->left = nullptr;
+        if (brother == nullptr) {
+            cout << "Brother doesn't exist, so nephews don't exist\n";
+            return;
         }
 
-        if (brother->right != nullptr) {
+        vector<int> nephewValues;
+        if (brother->left != nullptr) nephewValues.push_back(brother->left->val);
+        if (brother->right != nullptr) nephewValues.push_back(brother->right->val);
 
-            deleteTree(brother->right);
-            brother->right = nullptr;
+        if (nephewValues.empty()) {
+            cout << "Brother doesn't have children (nephews)\n";
+            return;
         }
 
-        // Node* grandparent = findParent(root, parent);
-        // if (grandparent == nullptr) {
-        //     cout << "The parent of average node is root. Grandparent don't exist\n";
-        //     return;
-        // }
-        //
-        // Node* uncle = nullptr;
-        // if (grandparent->left == parent)
-        //     uncle = grandparent->right;
-        // else
-        //     uncle = grandparent->left;
-
-        // if (uncle == nullptr) {
-        //     cout << "Uncle don't exist, so nephews don't exist \n";
-        //     return;
-        // }
-        //
-        // bool hasNephews = (uncle->left != nullptr || uncle->right != nullptr);
-        // if (!hasNephews) {
-        //     cout << "Uncle don't have a children, so nephews don't exist\n";
-        //     return;
-        // }
-        //
-        //
-        // if (uncle->left != nullptr) {
-        //     deleteTree(uncle->left);
-        //     uncle->left = nullptr;
-        // }
-        //
-        // if (uncle->right != nullptr) {
-        //     deleteTree(uncle->right);
-        //     uncle->right = nullptr;
-        // }
+        for (int val : nephewValues) {
+            root = removeNode(root, val);
+        }
     }
 
     void printLevel(Node* node, int level, int target) {
@@ -153,19 +164,20 @@ struct TreeNode {
 
 int main() {
     int n;
+    cout << "Enter number of nodes: ";
     cin >> n;
 
     TreeNode* tree = new TreeNode();
+    cout << "Enter nodes: ";
     for (int i = 0; i < n; i++) {
         int num;
         cin >> num;
-        tree->root = tree->insert(tree->root, num);
+        tree->root = tree->insert(tree->root, num, i);
     }
 
     int K;
     cout << "Enter K >= 2: ";
     cin >> K;
-
 
     tree->printTree(K + 1);
 
@@ -177,6 +189,7 @@ int main() {
         return 0;
     }
 
+    cout << "Leaves on level " << K << ": ";
     for (Node* l : leaves) cout << l->val << " ";
     cout << "\n";
 
@@ -185,7 +198,7 @@ int main() {
 
     tree->deleteNephews(median);
 
-    cout << "\n\n";
+    cout << "After deleting nephews:\n";
     tree->printTree(K + 1);
 
     tree->deleteTree(tree->root);
