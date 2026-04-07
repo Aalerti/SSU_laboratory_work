@@ -16,13 +16,13 @@ struct TreeNode {
 
     TreeNode() : root(nullptr) {}
 
-    Node* insert(Node* root, int val, int order) {
-        if (root == nullptr) return new Node(val, order);
-        if (val < root->val)
-            root->left = insert(root->left, val, order);
-        else if (val > root->val)
-            root->right = insert(root->right, val, order);
-        return root;
+    Node* insert(Node* node, int val, int order) {
+        if (node == nullptr) return new Node(val, order);
+        if (val < node->val)
+            node->left = insert(node->left, val, order);
+        else if (val > node->val)
+            node->right = insert(node->right, val, order);
+        return node;
     }
 
     void deleteTree(Node* node) {
@@ -52,61 +52,64 @@ struct TreeNode {
             return a->val < b->val;
         });
 
-        int medianIdx = (leaves.size() - 1) / 2;
+        int medianIdx = leaves.size() / 2;
         return leaves[medianIdx];
     }
 
-    Node* findParent(Node* root, Node* target) {
-        if (root == nullptr) return nullptr;
-        if (root->left == target || root->right == target) return root;
+    Node* findParent(Node* node, Node* target) {
+        if (node == nullptr) return nullptr;
+        if (node->left == target || node->right == target) return node;
 
-        if (target->val < root->val)
-            return findParent(root->left, target);
+        if (target->val < node->val)
+            return findParent(node->left, target);
         else
-            return findParent(root->right, target);
+            return findParent(node->right, target);
     }
 
-    Node* removeNode(Node* node, int key) {
-        if (node == nullptr) return nullptr;
+    void collectAndFreeElements(Node* node, vector<pair<int, int>>& elements) {
+        if (node == nullptr) return;
+        elements.push_back({node->val, node->insertOrder});
+        collectAndFreeElements(node->left, elements);
+        collectAndFreeElements(node->right, elements);
+        delete node;
+    }
 
-        if (key < node->val) {
-            node->left = removeNode(node->left, key);
-        } else if (key > node->val) {
-            node->right = removeNode(node->right, key);
-        } else {
-            if (node->left == nullptr) {
-                Node* temp = node->right;
-                delete node;
-                return temp;
-            } else if (node->right == nullptr) {
-                Node* temp = node->left;
-                delete node;
-                return temp;
-            }
+    Node* removeNodeCustom(Node* root_node, int key) {
+        if (root_node == nullptr) return nullptr;
 
-            if (node->left->insertOrder < node->right->insertOrder) {
-                Node* maxLeft = node->left;
-                while (maxLeft->right != nullptr) {
-                    maxLeft = maxLeft->right;
-                }
-                maxLeft->right = node->right;
+        Node* parent = nullptr;
+        Node* curr = root_node;
 
-                Node* temp = node->left;
-                delete node;
-                return temp;
-            } else {
-                Node* minRight = node->right;
-                while (minRight->left != nullptr) {
-                    minRight = minRight->left;
-                }
-                minRight->left = node->left;
-
-                Node* temp = node->right;
-                delete node;
-                return temp;
-            }
+        while (curr != nullptr && curr->val != key) {
+            parent = curr;
+            if (key < curr->val) curr = curr->left;
+            else curr = curr->right;
         }
-        return node;
+
+        if (curr == nullptr) return root_node;
+
+        vector<pair<int, int>> descendants;
+        collectAndFreeElements(curr->left, descendants);
+        collectAndFreeElements(curr->right, descendants);
+
+        if (parent == nullptr) {
+            root_node = nullptr;
+        } else {
+            if (parent->left == curr) parent->left = nullptr;
+            else parent->right = nullptr;
+        }
+
+        delete curr;
+
+        sort(descendants.begin(), descendants.end(), [](const pair<int, int>& a, const pair<int, int>& b) {
+            return a.second < b.second;
+        });
+
+        for (const auto& el : descendants) {
+            root_node = insert(root_node, el.first, el.second);
+        }
+
+        return root_node;
     }
 
     void deleteNephews(Node* medianLeaf) {
@@ -114,7 +117,7 @@ struct TreeNode {
 
         Node* parent = findParent(root, medianLeaf);
         if (parent == nullptr) {
-            cout << "Average node is root. It doesn't have a parent\n";
+            cout << "Median node is root, it has no parent\n";
             return;
         }
 
@@ -126,7 +129,7 @@ struct TreeNode {
         }
 
         if (brother == nullptr) {
-            cout << "Brother doesn't exist, so nephews don't exist\n";
+            cout << "Parent has no sibling, hence no nephews\n";
             return;
         }
 
@@ -135,12 +138,12 @@ struct TreeNode {
         if (brother->right != nullptr) nephewValues.push_back(brother->right->val);
 
         if (nephewValues.empty()) {
-            cout << "Brother doesn't have children (nephews)\n";
+            cout << "Sibling has no children (no nephews)\n";
             return;
         }
 
         for (int val : nephewValues) {
-            root = removeNode(root, val);
+            root = removeNodeCustom(root, val);
         }
     }
 
@@ -153,14 +156,7 @@ struct TreeNode {
         printLevel(node->right, level + 1, target);
     }
 
-
-    int getHeight(Node* node) {
-        if (node == nullptr) return -1;
-        return max(getHeight(node->left), getHeight(node->right)) + 1;
-    }
-
-    void printTree() {
-        int maxLevel = getHeight(root);
+    void printTree(int maxLevel) {
         for (int i = 0; i <= maxLevel; i++) {
             cout << "  Level " << i << ": ";
             printLevel(root, 0, i);
@@ -186,13 +182,16 @@ int main() {
     cout << "Enter K >= 2: ";
     cin >> K;
 
-    tree->printTree();
+    cout << "\nInitial tree:\n";
+    tree->printTree(K + 1);
 
     vector<Node*> leaves;
     tree->getLeavesAtLevel(tree->root, 0, K, leaves);
 
     if (leaves.empty()) {
-        cout << "On level " << K << " leaves don't exist.\n";
+        cout << "No leaves on level " << K << ".\n";
+        tree->deleteTree(tree->root);
+        delete tree;
         return 0;
     }
 
@@ -201,12 +200,12 @@ int main() {
     cout << "\n";
 
     Node* median = tree->getMedianLeaf(leaves);
-    cout << "Average leaf: " << median->val << "\n\n";
+    cout << "Median leaf: " << median->val << "\n\n";
 
     tree->deleteNephews(median);
 
-    cout << "After deleting nephews:\n";
-    tree->printTree();
+    cout << "Tree after deleting nephews:\n";
+    tree->printTree(K + 1);
 
     tree->deleteTree(tree->root);
     delete tree;
