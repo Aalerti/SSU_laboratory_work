@@ -81,15 +81,23 @@ int main() {
     if (!(cin >> end)) return 0;
 
     if (start.size() < 2 || end.size() < 2) {
-        cout << "Incorrected input!!!";
+        cout << "Incorrect input!!!";
         return 1;
     }
     if (start[0] < 'A' || start[0] > 'H') {
-        cout << "Incorrected input!!!";
+        cout << "Incorrect input!!!";
         return 1;
     }
     if (start[1] < '1' || start[1] > '8') {
-        cout << "Incorrected input!!!";
+        cout << "Incorrect input!!!";
+        return 1;
+    }
+    if (end[0] < 'A' || end[0] > 'H') {
+        cout << "Incorrect input!!!";
+        return 1;
+    }
+    if (end[1] < '1' || end[1] > '8') {
+        cout << "Incorrect input!!!";
         return 1;
     }
 
