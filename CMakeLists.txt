@@ -14,6 +14,6 @@ add_subdirectory(term_2_lab7)
 add_subdirectory(term_2_exercise_vector)
 add_subdirectory(term_2_exercise_sort)
 add_subdirectory(term_2_exercise_chess_knight)
-
+add_subdirectory(term_2_exercise_graphs)
 
 add_subdirectory(term_2_optional)
