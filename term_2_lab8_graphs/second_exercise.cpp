@@ -36,7 +36,7 @@ map<int, vector<int>> init_graphs_on_adj_array() {
     return graph;
 }
 
-void print_graph_as_adj_array(const map<int, vector<int>> &graph) {
+void print_dir_graph_as_adj_array(const map<int, vector<int>> &graph) {
     for (auto [u, adj] : graph) {
         if (adj.empty()) {
             cout << u << ": isolated\n";
@@ -71,7 +71,7 @@ int main() {
     erase(graph[u], v);
 
 
-    print_graph_as_adj_array(graph);
+    print_dir_graph_as_adj_array(graph);
 
     return 0;
 }
