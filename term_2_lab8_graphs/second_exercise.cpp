@@ -38,8 +38,12 @@ map<int, vector<int>> init_graphs_on_adj_array() {
 
 void print_graph_as_adj_array(const map<int, vector<int>> &graph) {
     for (auto [u, adj] : graph) {
-        for (auto v : adj) {
-            cout << u << "->" << v << "\n";
+        if (adj.empty()) {
+            cout << u << ": isolated\n";
+        } else {
+            for (int v : adj) {
+                cout << u << "->" << v << "\n";
+            }
         }
     }
 }
