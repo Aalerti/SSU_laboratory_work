@@ -35,6 +35,17 @@ map<int, vector<int>> init_dir_graph_on_adj_array() {
     return graph;
 }
 
+map<int, int> compute_in_degree(const map<int, vector<int>>& graph) {
+    map<int, int> in_degree;
+    for (auto& [u, adj] : graph) {
+        in_degree[u];
+        for (int v : adj) {
+            in_degree[v]++;
+        }
+    }
+    return in_degree;
+}
+
 void print_dir_graph_as_adj_array(const map<int, vector<int>> &graph, map<int, int> &in_degree) {
     for (auto [u, adj] : graph) {
         if (adj.empty() && in_degree[u] == 0) {
@@ -50,15 +61,10 @@ void print_dir_graph_as_adj_array(const map<int, vector<int>> &graph, map<int, i
 int main() {
     map<int, vector<int>> graph = init_dir_graph_on_adj_array();
 
-    map<int, int> in_degree;
-    for (auto [u, adj] : graph) {
-        for (int v : adj) {
-            in_degree[v]++;
-        }
-    }
+    map<int,int > in_degree = compute_in_degree(graph);
 
     print_dir_graph_as_adj_array(graph, in_degree);
-    
+
     cout << "Degree of vertices:\n";
     for (auto [u, out_degree_arr]: graph) {
         cout << "Vertice: " << u << ": " << in_degree[u] + out_degree_arr.size() << "\n";
