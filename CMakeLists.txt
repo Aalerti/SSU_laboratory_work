@@ -11,6 +11,7 @@ add_subdirectory(term_2_lab5)
 add_subdirectory(term_2_lab6_linkedList)
 add_subdirectory(term_2_lab7_trees)
 add_subdirectory(term_2_lab8_graphs)
+add_subdirectory(term_2_lab9_hash)
 
 add_subdirectory(term_2_exercise_vector)
 add_subdirectory(term_2_exercise_sort)
