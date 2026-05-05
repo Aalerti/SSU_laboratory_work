@@ -6,7 +6,7 @@ Sokolov DevOps 22 07 1989 6 150000
 Lebedev Designer 10 09 1995 4 95000
 Kozlov Analyst 18 03 1991 5 110000
 Novikov Manager 05 12 1982 12 85000
-Morozov Developer 30 06 1993 4 115000
+Morozov Developer 30 06 1982 4 115000
 Petrov QA 14 02 1994 2 55000
 Volkov CEO 01 01 1975 25 500000
 Solovyov Developer 17 05 1996 2 90000
