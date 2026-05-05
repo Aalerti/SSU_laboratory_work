@@ -116,7 +116,7 @@ struct  DoublyLinkedList {
     static void printEmployee(const Employee& e) {
         cout << e.lastName << " " << e.position << " "
              << e.day << "." << e.month << "." << e.year << " "
-             << e.experience << "yr " << e.salary << "\n";
+             << e.experience << "yr " << e.salary << " | ";
     }
 };
 
@@ -147,7 +147,9 @@ struct HashTable {
 
     void print() {
         for (int index = 0; index < M; index++) {
+            cout << "backet " << index << ": ";
             table[index].printAll();
+            cout << '\n';
         }
     }
 };
